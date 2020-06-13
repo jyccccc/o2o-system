@@ -1,7 +1,6 @@
 package com.jyc.o2o_demo.dao;
 
 import com.jyc.o2o_demo.bean.Table;
-import javafx.scene.control.Tab;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -15,8 +14,9 @@ import java.util.List;
 @Repository
 public interface TableMapper {
 
-    public List<Table> getDishes();
+    List<Table> getAllTables();
 
-    public Table getDishById(Integer id);
+    Integer modifyTableState(Integer id, Integer state);
 
+    Table getTableById(Integer id);
 }

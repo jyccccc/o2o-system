@@ -5,7 +5,9 @@ import com.jyc.o2o_demo.bean.DishOrder;
 import com.jyc.o2o_demo.bean.Order;
 import com.jyc.o2o_demo.constant.DishConstants;
 import com.jyc.o2o_demo.constant.OrderConstants;
+import com.jyc.o2o_demo.constant.TableConstants;
 import com.jyc.o2o_demo.dao.OrderMapper;
+import com.jyc.o2o_demo.dao.TableMapper;
 import com.jyc.o2o_demo.dto.DishDTO;
 import com.jyc.o2o_demo.dto.DishOrderDTO;
 import com.jyc.o2o_demo.dto.OrderDTO;
@@ -23,6 +25,8 @@ public class OrderService {
 
     @Autowired
     private OrderMapper orderMapper;
+    @Autowired
+    private TableMapper tableMapper;
 
     /**
      * 提交订单
@@ -37,6 +41,7 @@ public class OrderService {
                 dishOrder.setOrderId(order.getId());
             }
             orderMapper.insertOrderDishes(order);
+            tableMapper.modifyTableState(order.getTableId(), TableConstants.TABLE_USE);
             // 通知worker
             return order;
         } catch (Exception e) {

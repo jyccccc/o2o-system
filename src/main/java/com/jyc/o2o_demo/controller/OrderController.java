@@ -1,24 +1,26 @@
 package com.jyc.o2o_demo.controller;
 
-import com.jyc.o2o_demo.bean.Dish;
-import com.jyc.o2o_demo.bean.DishOrder;
-import com.jyc.o2o_demo.bean.Msg;
-import com.jyc.o2o_demo.bean.Order;
+import com.jyc.o2o_demo.bean.*;
 import com.jyc.o2o_demo.constant.OrderConstants;
+import com.jyc.o2o_demo.constant.TableConstants;
 import com.jyc.o2o_demo.dto.OrderDTO;
 import com.jyc.o2o_demo.service.OrderService;
+import com.jyc.o2o_demo.service.TableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @RestController
 public class OrderController {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private TableService tableService;
 
     /**
      * 提交订单
@@ -28,6 +30,11 @@ public class OrderController {
     @PostMapping("/orders/submit")
     public Msg submitOrder(@RequestBody Order order) {
         Msg msg = new Msg();
+        Table table = tableService.getTableById(order.getTableId());
+        if (table.getState() != TableConstants.TABLE_EMPTY) {
+            msg.setCM(301,"该餐桌无法预约");
+            return msg;
+        }
         System.out.println("submit order: " + order + "dishes are: " + order.getDishList());
         if (order.getCreateTime() == null) {
             order.setCreateTime(new Date());
@@ -41,6 +48,19 @@ public class OrderController {
             }
         }
         Order order1 = orderService.submitOrder(order);
+        // 提交后，2小时后自动置餐桌为空闲状态，用餐结束
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        tableService.modifyTableState(order.getTableId(),TableConstants.TABLE_EMPTY);
+                    }
+                },1000*TableConstants.DINNER_TIME);
+            }
+        }).start();
         if(order1 != null) {
             msg.setCM(200,"提交成功");
             msg.putData("Order",order1);
