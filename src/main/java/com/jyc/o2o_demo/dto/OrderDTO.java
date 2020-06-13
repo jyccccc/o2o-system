@@ -1,12 +1,19 @@
-package com.jyc.o2o_demo.bean;
+package com.jyc.o2o_demo.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.jyc.o2o_demo.bean.DishOrder;
+import com.jyc.o2o_demo.bean.Order;
+
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
- * 订单
+ * 若不提供get、set、constructor，会报序列化错误！
  */
-public class Order {
+public class OrderDTO implements Serializable{
+    private static final long serialVersionUID = 1L;
 
     private Integer id;
     private Integer customerId;
@@ -14,46 +21,10 @@ public class Order {
     private Double price;
     private Integer state;
     private String notes;
-    private List<DishOrder> dishList;
+    private List<DishOrderDTO> dishList;
     private Integer tableId;
 
-    public Order() {
-    }
 
-    public Order(Integer customerId, Date createTime, Double price, Integer state) {
-        this.customerId = customerId;
-        this.createTime = createTime;
-        this.price = price;
-        this.state = state;
-    }
-
-    public Order(Integer customerId, Date createTime, Double price, Integer state, String notes, Integer tableId) {
-        this.customerId = customerId;
-        this.createTime = createTime;
-        this.price = price;
-        this.state = state;
-        this.notes = notes;
-        this.tableId = tableId;
-    }
-
-    public Order(Integer id, List<DishOrder> dishList) {
-        this.id = id;
-        this.dishList = dishList;
-    }
-
-    @Override
-    public String toString() {
-        return "Order{" +
-                "id=" + id +
-                ", customerId=" + customerId +
-                ", createTime=" + createTime +
-                ", price=" + price +
-                ", state=" + state +
-                ", notes='" + notes + '\'' +
-                ", dishList=" + dishList +
-                ", tableId=" + tableId +
-                '}';
-    }
 
     public Integer getId() {
         return id;
@@ -103,11 +74,11 @@ public class Order {
         this.notes = notes;
     }
 
-    public List<DishOrder> getDishList() {
+    public List<DishOrderDTO> getDishList() {
         return dishList;
     }
 
-    public void setDishList(List<DishOrder> dishList) {
+    public void setDishList(List<DishOrderDTO> dishList) {
         this.dishList = dishList;
     }
 
@@ -117,5 +88,23 @@ public class Order {
 
     public void setTableId(Integer tableId) {
         this.tableId = tableId;
+    }
+
+    public OrderDTO() {
+    }
+
+    public OrderDTO(Order order) {
+        this.id = order.getId();
+        this.createTime = order.getCreateTime();
+        this.customerId = order.getCustomerId();
+        this.price = order.getPrice();
+        this.tableId = order.getTableId();
+        this.notes = order.getNotes();
+        this.state = order.getState();
+        this.dishList = new ArrayList<>();
+    }
+
+    public void PutData(DishOrderDTO dishOrderDTO) {
+        this.dishList.add(dishOrderDTO);
     }
 }

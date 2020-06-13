@@ -18,6 +18,10 @@ public class DishService {
     @Autowired
     private DishMapper dishMapper;
 
+    /**
+     * 获取所有菜品
+     * @return
+     */
     public List<DishDTO> getAllDishes() {
         List<Dish> dishes = dishMapper.getAllDishes();
         List<DishDTO> dishDTOS = new ArrayList<>();
@@ -27,6 +31,11 @@ public class DishService {
         return dishDTOS;
     }
 
+    /**
+     * 获取指定类型的菜品
+     * @param type
+     * @return
+     */
     public List<DishDTO> getDishesByType(String type) {
         List<Dish> dishes = dishMapper.getDishesByType(type);
         List<DishDTO> dishDTOS = new ArrayList<>();
@@ -36,12 +45,22 @@ public class DishService {
         return dishDTOS;
     }
 
+    /**
+     * 获取指定ID的菜品
+     * @param id
+     * @return
+     */
     public DishDTO getDishInfo(Integer id){
         Dish dish = dishMapper.getDishInfo(id);
         DishDTO dishDTO = toDishDTO(dish);
         return dishDTO;
     }
 
+    /**
+     * 转换为DishDTO
+     * @param dish
+     * @return
+     */
     private DishDTO toDishDTO(Dish dish) {
         DishDTO dishDTO = new DishDTO(dish);
         try {

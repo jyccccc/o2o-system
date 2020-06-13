@@ -11,40 +11,77 @@
         <result property="state" column="state"/>
         <result property="notes" column="notes"/>
         <result property="tableId" column="table_id"/>
-        <collection property="dishList" ofType="Dish">
+        <collection property="dishList" ofType="DishOrder">
             <id property="id" column="d_id"/>
             <result property="name" column="name" />
-            <result property="type" column="type"/>
+            <result property="dishId" column="dish_id"/>
+            <result property="orderId" column="order_id" />
             <result property="price" column="dish_price"/>
             <result property="pic" column="pic"/>
-            <result property="description" column="description"/>
-            <result property="state" column="dish_state"/>
+            <result property="createTime" column="d_create_time"/>
+            <result property="dishNum" column="dish_num"/>
         </collection>
     </resultMap>
 
-    <!-- 伪多对多插入 -->
+
     <insert id="insertOrder" parameterType="Order" useGeneratedKeys="true" keyProperty="id">
         insert into orders(customer_id,create_time,price,state,notes,table_id)
         values (#{customerId},#{createTime},#{price},#{state},#{notes},#{tableId})
     </insert>
 
+    <!-- 一对多插入 -->
     <insert id="insertOrderDishes" parameterType="Order">
-        insert into dishes(order_id,dish_id)
-        select orders.id,dish.id from dish,orders where
-        orders.id = #{id} and
-        dish.id in
-        <foreach collection="dishList" item="cur_dish"
-                 open="(" separator="," close=")">
-            #{cur_dish.id}
+        insert into dishes(order_id,dish_id,create_time,dish_num,pic,price,name) values
+        <foreach collection="dishList" item="c"
+                 separator=",">
+            (#{c.orderId},#{c.dishId},#{c.createTime},#{c.dishNum},#{c.pic},#{c.price},#{c.name})
         </foreach>
     </insert>
 
+    <!-- 更新订单状态 -->
+    <update id="modifyOrderStateById" parameterType="Integer" >
+        update orders
+        set state = #{state}
+        where id = #{id}
+    </update>
+
+    <!-- 更新订单金额 -->
+    <update id="modifyOrderPrice" >
+        update orders
+        set price = price + #{price}
+        where id = #{id}
+    </update>
+
+    <!-- 多对多插入 -->
+<!--    <insert id="insertOrderDishes" parameterType="Order">-->
+<!--        insert into dishes(order_id,dish_id,create_time,dish_num,pic,dish_price,name)-->
+<!--        select orders.id,dish.id from dish,orders where-->
+<!--        orders.id = #{id} and-->
+<!--        dish.id in-->
+<!--        <foreach collection="dishList" item="cur_dish"-->
+<!--                 open="(" separator="," close=")">-->
+<!--            #{cur_dish.id}-->
+<!--        </foreach>-->
+<!--    </insert>-->
+
     <!-- 一对多查询 -->
     <select id="selectOrderByCustomerId" parameterType="Integer" resultMap="OrderResult">
-        select orders.*,dish.id as d_id,dish.price as dish_price,dish.state as dish_state,dish.name,dish.type,dish.pic,dish.description
-        from orders,dish,dishes
-        where dishes.order_id = orders.id and dishes.dish_id = dish.id and orders.customer_id = #{customerId}
+        select orders.*,dishes.id as d_id,dishes.price as dish_price,dishes.create_time as d_create_time,name,order_id,dish_id,dish_num,pic
+        from orders,dishes
+        where dishes.order_id = orders.id and orders.customer_id = #{customerId}
     </select>
-    
-    
+
+    <!-- 根据订单号查找订单 -->
+    <select id="getOrderById" parameterType="Integer" resultMap="OrderResult">
+        select orders.*,dishes.id as d_id,dishes.price as dish_price,dishes.create_time as d_create_time,name,order_id,dish_id,dish_num,pic
+        from orders,dishes
+        where dishes.order_id = orders.id and orders.id = #{id}
+    </select>
+
+    <select id="getOrdersByCustomerIdOrderId" parameterType="Integer" resultMap="OrderResult">
+        select orders.*,dishes.id as d_id,dishes.price as dish_price,dishes.create_time as d_create_time,name,order_id,dish_id,dish_num,pic
+        from orders,dishes
+        where dishes.order_id = orders.id and orders.id = #{oId} and orders.customer_id = #{cId}
+    </select>
+
 </mapper>

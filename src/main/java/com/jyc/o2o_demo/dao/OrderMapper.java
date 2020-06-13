@@ -33,4 +33,35 @@ public interface OrderMapper {
      * @return
      */
     public List<Order> selectOrderByCustomerId(Integer customerId);
+
+    /**
+     * 修改订单状态
+     * @param id
+     * @param state
+     * @return
+     */
+    public Integer modifyOrderStateById(Integer id,Integer state);
+
+    /**
+     * 修改订单金额
+     * @param id
+     * @param price
+     * @return
+     */
+    public Integer modifyOrderPrice(Integer id,Double price);
+
+    /**
+     * 查询指定用户id和订单id的订单
+     * @param cId
+     * @param oId
+     * @return
+     */
+    public Order getOrdersByCustomerIdOrderId(Integer cId,Integer oId);
+
+    /**
+     * 根据订单号查询订单
+     * @param id
+     * @return
+     */
+    public Order getOrderById(Integer id);
 }

@@ -19,6 +19,9 @@ public class OrderTests {
     @Autowired
     DishMapper dishMapper;
 
+    /**
+     * 订单查询
+     */
     @Test
     public void selectOrderTest() {
         List<Order> orders = orderMapper.selectOrderByCustomerId(1);
@@ -30,12 +33,15 @@ public class OrderTests {
         }
     }
 
-    @Test
-    public void insertOrderTest() {
-        Order order = new Order(1, DateUtil.now(),55.88,1);
-        List<Dish> dishes = dishMapper.getDishesByType("热门");
-        order.setDishList(dishes);
-        System.out.println(orderMapper.insertOrder(order) + " " + order.getId());
-        orderMapper.insertOrderDishes(order);
-    }
+//    /**
+//     * 订单插入
+//     */
+//    @Test
+//    public void insertOrderTest() {
+//        Order order = new Order(1, DateUtil.now(),55.88,1);
+//        List<Dish> dishes = dishMapper.getDishesByType("热门");
+//        order.setDishList(dishes);
+//        System.out.println(orderMapper.insertOrder(order) + " " + order.getId());
+//        orderMapper.insertOrderDishes(order);
+//    }
 }
