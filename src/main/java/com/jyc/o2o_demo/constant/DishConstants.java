@@ -7,6 +7,8 @@ public class DishConstants {
 
     // 照片文件路径
     public static final String PIC_PATH = "C:\\Users\\Mar.J\\Desktop\\o2o_system\\src\\main\\resources\\static\\images\\dishes\\";
+    public static final String PIC_DEFAULT = "default.png";
+
 
     // 菜品类型
     public static final String DISH_TYPE_NORTH = "北方菜";

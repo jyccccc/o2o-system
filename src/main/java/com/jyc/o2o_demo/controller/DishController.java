@@ -2,13 +2,13 @@ package com.jyc.o2o_demo.controller;
 
 import com.jyc.o2o_demo.bean.Dish;
 import com.jyc.o2o_demo.bean.Msg;
+import com.jyc.o2o_demo.constant.DishConstants;
 import com.jyc.o2o_demo.dto.DishDTO;
 import com.jyc.o2o_demo.service.DishService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -71,4 +71,37 @@ public class DishController {
         }
         return msg;
     }
+
+    /**
+     * 增加菜品
+     * @param name
+     * @param file
+     * @param type
+     * @param price
+     * @param description
+     * @param state
+     * @return
+     */
+    @PostMapping("/dishes")
+    public Msg addDishes(@RequestParam("name")String name, @RequestParam("pic") MultipartFile file,
+                         @RequestParam("type")String type, @RequestParam("price")Double price,
+                         @RequestParam("description")String description,@RequestParam("state")Integer state) {
+        Dish dish = new Dish(name, type, price, description, state);
+        if (dish.getState() == null) {
+            dish.setState(DishConstants.DISH_STATE_ON);
+        }
+        DishDTO dishDTO = dishService.addDish(dish,file);
+        if (dishDTO != null) {
+            Msg msg = new Msg(200, "增加成功");
+            msg.putData("dish",dishDTO);
+            return msg;
+        } else {
+            return new Msg(400,"增加失败");
+        }
+    }
+
+//    @PutMapping("/dishes/{dishId}")
+//    public Msg updateDishById(@RequestParam("dishState") Integer dishState, @PathVariable("dishId") Integer dishId) {
+//        dishService.updateDishById(dishId,dishState);
+//    }
 }

@@ -78,6 +78,12 @@
         where dishes.order_id = orders.id and orders.id = #{id}
     </select>
 
+    <select id="getAllOrders" resultMap="OrderResult">
+        select orders.*,dishes.id as d_id,dishes.price as dish_price,dishes.create_time as d_create_time,name,order_id,dish_id,dish_num,pic
+        from orders,dishes
+        where dishes.order_id = orders.id
+    </select>
+
     <select id="getOrdersByCustomerIdOrderId" parameterType="Integer" resultMap="OrderResult">
         select orders.*,dishes.id as d_id,dishes.price as dish_price,dishes.create_time as d_create_time,name,order_id,dish_id,dish_num,pic
         from orders,dishes

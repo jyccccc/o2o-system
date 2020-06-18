@@ -114,6 +114,14 @@ public class OrderService {
         return orderDTO;
     }
 
+    /**
+     * 查询所有订单
+     * @return
+     */
+    public List<Order> getAllOrders() {
+        return orderMapper.getAllOrders();
+    }
+
     private OrderDTO toOrderDTO(Order order) {
         OrderDTO orderDTO = new OrderDTO(order);
         try {
@@ -131,8 +139,8 @@ public class OrderService {
         return orderDTO;
     }
 
-
     public Order getOrderById(Integer id) {
         return orderMapper.getOrderById(id);
     }
+
 }

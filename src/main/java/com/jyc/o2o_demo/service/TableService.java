@@ -5,9 +5,11 @@ import com.jyc.o2o_demo.constant.DishConstants;
 import com.jyc.o2o_demo.constant.TableConstants;
 import com.jyc.o2o_demo.dao.TableMapper;
 import com.jyc.o2o_demo.dto.TableDTO;
+import com.jyc.o2o_demo.utils.PicUtil;
 import javafx.scene.control.Tab;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.PushBuilder;
 import java.io.File;
@@ -27,6 +29,7 @@ public class TableService {
      * @param state
      * @return
      */
+    @Transactional
     public Integer modifyTableState(Integer id,Integer state) {
         return tableMapper.modifyTableState(id,state);
     }
@@ -56,12 +59,8 @@ public class TableService {
 
     private TableDTO toTableDTO(Table table) {
         try {
-            File file = new File(TableConstants.PIC_PATH + table.getQrCode());
-            System.out.println(TableConstants.PIC_PATH + table.getQrCode());
-            FileInputStream inputStream = new FileInputStream(file);
-            byte[] bytes = new byte[inputStream.available()];
-            inputStream.read(bytes,0,inputStream.available());
-            return new TableDTO(table,bytes);
+            byte[] bytes1 = PicUtil.getBytesByPath(TableConstants.PIC_PATH + table.getQrCode());
+            return new TableDTO(table,bytes1);
         } catch (Exception e) {
             System.out.println("图片文件打开失败");
         }

@@ -13,6 +13,18 @@ public class Dish {
     private String description;
     private Integer state;
 
+    public Dish() {
+    }
+
+    public Dish(String name, String type, Double price, String description, Integer state) {
+        this.name = name;
+        this.type = type;
+        this.price = price;
+        this.description = description;
+        this.state = state;
+    }
+
+
     @Override
     public String toString() {
         return "Dish{" +

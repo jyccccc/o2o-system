@@ -64,4 +64,10 @@ public interface OrderMapper {
      * @return
      */
     public Order getOrderById(Integer id);
+
+    /**
+     * 返回所有订单
+     * @return
+     */
+    List<Order> getAllOrders();
 }

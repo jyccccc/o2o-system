@@ -19,4 +19,7 @@ public interface DishMapper {
 
     public Dish getDishInfo(Integer id);
 
+    Integer updateDishById(Integer dishId, Integer state);
+
+    Integer addDish(Dish dish);
 }

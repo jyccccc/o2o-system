@@ -19,6 +19,13 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    /**
+     * 用户登录
+     * @param username
+     * @param password
+     * @param httpSession
+     * @return
+     */
     @PostMapping(path = "/users/login")
     public Msg doLogin(String username, String password, HttpSession httpSession) {
         System.out.println("Customer---username："+ username + " password：" + password + "login");
@@ -35,6 +42,14 @@ public class UserController {
         return msg;
     }
 
+    /**
+     * 用户注册
+     * @param username
+     * @param password
+     * @param phone
+     * @param httpSession
+     * @return
+     */
     @PutMapping(path = "/users/register")
     public Msg doRegister(String username, String password, String phone, HttpSession httpSession) {
         System.out.println("Customer---username："+ username + " password：" + password + "register");

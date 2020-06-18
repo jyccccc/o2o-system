@@ -23,6 +23,21 @@ public class OrderController {
     private TableService tableService;
 
     /**
+     * 获取所有订单
+     * @return
+     */
+    @GetMapping("/orders")
+    public Msg getAllOrders() {
+        System.out.println("Get all orders");
+        Msg msg = new Msg();
+        List<Order> orderList = orderService.getAllOrders();
+        msg.setCM(200,"查询成功");
+        msg.putData("orders",orderList);
+        msg.putData("length",orderList.size());
+        return msg;
+    }
+
+    /**
      * 提交订单
      * @param order
      * @return
