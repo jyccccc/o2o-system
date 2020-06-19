@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -19,60 +21,57 @@ public class TableController {
 
     /**
      * 查询所有餐桌
-     * @return
+     * @return  餐桌列表
      */
     @GetMapping("/tables")
-    public Msg getAllTables() {
+    public List<TableDTO> getAllTables(HttpServletResponse response) throws IOException {
         List<TableDTO> tableList = tableService.getAllTables();
-        Msg msg = new Msg();
         if (tableList.size() != 0) {
-            msg.setCM(200,"查询成功");
-            msg.putData("tables",tableList);
-            msg.putData("length",tableList.size());
-            return msg;
+            response.setStatus(200);
+        } else {
+            response.sendError(403,"Can't find tables");
         }
-        msg.setCM(400,"查询失败");
-        return msg;
+        return tableList;
     }
 
     /**
      * 修改餐桌状态
-     * @param tableId
-     * @param state
-     * @return
+     * @param tableId  餐桌id
+     * @param state  餐桌状态
+     * @return  修改后的餐桌
      */
     @PutMapping("/tables/{tableId}")
-    public Msg updateOrderState(@PathVariable("tableId") Integer tableId,@RequestParam("state") Integer state) {
+    public Table updateOrderState(@PathVariable("tableId") Integer tableId,@RequestParam("state") Integer state,
+                                  HttpServletResponse response) throws IOException {
         System.out.println("Update table's state to " + state);
         Integer res = tableService.modifyTableState(tableId, state);
+        Table table = tableService.getTableById(tableId);
         if (res != 0) {
-            Msg msg = new Msg(200, "修改成功");
-            msg.putData("table",tableService.getTableById(tableId));
-            return msg;
+            response.setStatus(200);
+        } else {
+            response.sendError(507,"Can't modify table's state");
         }
-        return new Msg(400,"修改失败");
+        return table;
     }
 
     /**
-     * 增加餐桌
-     * @param state
-     * @param place
+     * 增加餐桌，二维码后台生成
+     * @param state  餐桌状态
+     * @param place  餐桌位置
      * @param session
-     * @return
+     * @return  增加后的餐桌
      */
     @PostMapping("/tables")
-    public Msg addTable(@RequestParam("state") Integer state, @RequestParam("place") String place,
-                        @RequestParam("type")Integer type, HttpSession session) {
+    public Table addTable(@RequestParam("state") Integer state, @RequestParam("place") String place,
+                        @RequestParam("type")Integer type, HttpSession session,HttpServletResponse response) throws IOException {
         System.out.println(session.getAttribute("ADMIN_SESSION") + "add table");
-        Msg msg = new Msg();
         Table table = tableService.addTable(state,place,type);
         if (table != null) {
-            msg.setCM(200,"插入成功");
-            msg.putData("table",table);
+            response.setStatus(200);
         } else {
-            msg.setCM(400,"插入失败");
+            response.sendError(503,"can't add tables");
         }
-        return msg;
+        return table;
     }
 
 }

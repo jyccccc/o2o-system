@@ -3,12 +3,15 @@ package com.jyc.o2o_demo.controller;
 import com.jyc.o2o_demo.bean.*;
 import com.jyc.o2o_demo.constant.OrderConstants;
 import com.jyc.o2o_demo.constant.TableConstants;
+import com.jyc.o2o_demo.dto.DishDTO;
 import com.jyc.o2o_demo.dto.OrderDTO;
 import com.jyc.o2o_demo.service.OrderService;
 import com.jyc.o2o_demo.service.TableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -24,31 +27,33 @@ public class OrderController {
 
     /**
      * 获取所有订单
-     * @return
+     * @return  订单列表
      */
     @GetMapping("/orders")
-    public Msg getAllOrders() {
+    public List<Order> getAllOrders(HttpServletResponse response) throws IOException {
         System.out.println("Get all orders");
-        Msg msg = new Msg();
         List<Order> orderList = orderService.getAllOrders();
-        msg.setCM(200,"查询成功");
-        msg.putData("orders",orderList);
-        msg.putData("length",orderList.size());
-        return msg;
+        if (!orderList.isEmpty()) {
+            response.setStatus(200);
+            response.addIntHeader("orderLens",orderList.size());
+        } else {
+            response.sendError(403,"Can't find orders");
+        }
+        return orderList;
     }
 
     /**
      * 提交订单
-     * @param order
-     * @return
+     * @param order 提交订单
+     * @return  提交好的订单
      */
     @PostMapping("/orders/submit")
-    public Msg submitOrder(@RequestBody Order order) {
+    public Order submitOrder(@RequestBody Order order, HttpServletResponse response) throws IOException {
         Msg msg = new Msg();
         Table table = tableService.getTableById(order.getTableId());
-        if (table.getState() != TableConstants.TABLE_EMPTY) {
-            msg.setCM(301,"该餐桌无法预约");
-            return msg;
+        if (table.getState() != TableConstants.TABLE_EMPTY) {  // 餐桌被预定了
+            response.sendError(400,"Table has already ordered!");
+            return null;
         }
         System.out.println("submit order: " + order + "dishes are: " + order.getDishList());
         if (order.getCreateTime() == null) {
@@ -77,52 +82,39 @@ public class OrderController {
             }
         }).start();
         if(order1 != null) {
-            msg.setCM(200,"提交成功");
-            msg.putData("Order",order1);
+            response.setStatus(200);
+        } else {
+            response.sendError(503,"Fail to submit order!");
         }
-        return msg;
+        return order1;
     }
 
     /**
      * 更新订单状态-用户审核通过
-     * @param orderId
-     * @param state
-     * @return
+     * @param orderId 订单id
+     * @param state  订单状态
+     * @return  修改结果
      */
     @PutMapping("/orders/{id}")
-    public Msg modifyOrderStateById(@PathVariable("id")Integer orderId, @RequestParam("state") Integer state) {
+    public Integer modifyOrderStateById(@PathVariable("id")Integer orderId, @RequestParam("state") Integer state,
+                                        HttpServletResponse response) throws IOException {
         System.out.println("OrderId = " + orderId + "modify state to " + state);
-        Msg msg = new Msg();
         Integer result = orderService.modifyOrderStateById(orderId,state);
         if (result != 0) {
-            msg.setCM(200,"修改成功");
+            response.setStatus(200);
+        } else {
+            response.sendError(507,"Can't modify order's state");
         }
-        return msg;
-    }
-
-    /**
-     * 根据用户Id查询订单
-     * @param customerId
-     * @return
-     */
-    @GetMapping("/orders/{customerId}")
-    public Msg getOrdersByCustomerId(@PathVariable("customerId") Integer customerId) {
-        System.out.println("customer whose id = " + customerId + " search his orders");
-        Msg msg = new Msg();
-        List<Order> orderList = orderService.getOrdersByCustomerId(customerId);
-        msg.setCM(200,"查询成功");
-        msg.putData("orders",orderList);
-        msg.putData("length",orderList.size());
-        return msg;
+        return result;
     }
 
     /**
      * 为订单加菜-重置订单状态+金额+菜表
-     * @param order
-     * @return
+     * @param order 加菜的子订单
+     * @return 新的总订单
      */
     @PostMapping("/orders/dishes")
-    public Msg addDishesToOrder(@RequestBody Order order) {
+    public OrderDTO addDishesToOrder(@RequestBody Order order, HttpServletResponse response) throws IOException {
         System.out.println("order(id=" + order.getId() + ") add dishes: " + order.getDishList());
         Msg msg = new Msg();
         for (DishOrder dishOrder: order.getDishList()) {
@@ -132,29 +124,47 @@ public class OrderController {
         }
         Integer res = orderService.addDishesToOrder(order.getId(),order.getDishList());
         if (res != 0) {
-            msg.setCM(200,"加菜成功");
-            msg.putData("newOrder",orderService.getOrderById(order.getId()));
+            response.setStatus(200);
         } else {
-            msg.setCM(400,"加菜失败");
+            response.sendError(503,"Add dishes fail");
         }
-        return msg;
+        return orderService.getOrderById(order.getId());
     }
 
     /**
      * 根据用户id和订单id查询订单详情
-     * @param customerId
-     * @param orderId
-     * @return
+     * @param orderId  订单id
+     * @return  订单
      */
-    @GetMapping("/orders/{customerId}/{orderId}")
-    public Msg getOrdersByCustomerIdOrderId(@PathVariable("customerId") Integer customerId,
-                                            @PathVariable("orderId") Integer orderId) {
-        System.out.println("customer(id = " + customerId + ") search his order(id = " + orderId + ")");
+    @GetMapping("/orders/id")
+    public OrderDTO getOrdersByCustomerIdOrderId(@RequestParam("orderId") Integer orderId,HttpServletResponse response) throws IOException {
+        System.out.println("customer" + " search his order(id = " + orderId + ")");
+        OrderDTO orderDTO = orderService.getOrderById(orderId);
+        if (orderDTO != null) {
+            response.setStatus(200);
+        } else {
+            response.sendError(403,"Can't find order");
+        }
+        return orderDTO;
+    }
+
+    /**
+     * 根据用户Id查询订单
+     * @param customerId  用户id
+     * @return  订单列表
+     */
+    @GetMapping("/orders/{customerId}")
+    public List<Order> getOrdersByCustomerId(@PathVariable("customerId") Integer customerId,HttpServletResponse response) throws IOException {
+        System.out.println("customer whose id = " + customerId + " search his orders");
         Msg msg = new Msg();
-        OrderDTO orderDTO = orderService.getOrdersByCustomerIdOrderId(customerId,orderId);
-        msg.setCM(200,"查询成功");
-        msg.putData("order",orderDTO);
-        return msg;
+        List<Order> orderList = orderService.getOrdersByCustomerId(customerId);
+        if (!orderList.isEmpty()) {
+            response.setStatus(200);
+            response.addIntHeader("orderLens",orderList.size());
+        } else {
+            response.sendError(403,"Can't find orders");
+        }
+        return orderList;
     }
 
     // @PostMapping("/orders/pay/{orderId}")

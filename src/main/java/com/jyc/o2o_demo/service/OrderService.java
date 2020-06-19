@@ -103,6 +103,16 @@ public class OrderService {
     }
 
     /**
+     * 根据订单id查询订单
+     * @param id
+     * @return
+     */
+    public OrderDTO getOrderById(Integer id) {
+        Order order = orderMapper.getOrderById(id);
+        return toOrderDTO(order);
+    }
+
+    /**
      * 根据用户id和订单id查询订单详情
      * @param customerId
      * @param orderId
@@ -137,10 +147,6 @@ public class OrderService {
             System.out.println("图片文件打开失败");
         }
         return orderDTO;
-    }
-
-    public Order getOrderById(Integer id) {
-        return orderMapper.getOrderById(id);
     }
 
 }

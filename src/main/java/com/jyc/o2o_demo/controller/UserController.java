@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,50 +27,47 @@ public class UserController {
 
     /**
      * 用户 + 管理员登录
-     * @param username
-     * @param password
+     * @param username  账号名
+     * @param password  密码
      * @param httpSession
-     * @return
+     * @return  登录成功的用户
      */
     @PostMapping(path = "/users/login")
-    public Msg doLogin(@RequestParam("username") String username, @RequestParam("password") String password,
-                       @RequestParam("authority") Integer authority, HttpSession httpSession) {
+    public User doLogin(@RequestParam("username") String username, @RequestParam("password") String password,
+                        @RequestParam("authority") Integer authority, HttpSession httpSession, HttpServletResponse response) throws IOException {
         System.out.println("User---username："+ username + " password：" + password + "login");
         Msg msg = new Msg(200,"登录成功");
         User user = userService.doLogin(username,password,authority);
         if (user != null) {
             httpSession.setAttribute("USER_SESSION",user);
-            Map<String,Object> map = new HashMap<String, Object>();
-            map.put("User",user);
-            msg.setData(map);
+            response.setStatus(200);
         } else {
-            msg.setCM(200, "登录失败，请重新输入");
+            response.sendError(500,"can't login");
         }
-        return msg;
+        return user;
     }
 
     /**
      * 用户注册
-     * @param username
-     * @param password
-     * @param phone
+     * @param username  账户名
+     * @param password  密码
+     * @param phone  手机号
      * @param httpSession
-     * @return
+     * @return  注册成功的用户
      */
     @PutMapping(path = "/users/register")
-    public Msg doRegister(@RequestParam("username") String username,@RequestParam("password") String password,
-                          @RequestParam("phone") String phone,@RequestParam("authority") Integer authority,HttpSession httpSession) {
+    public User doRegister(@RequestParam("username") String username,@RequestParam("password") String password,
+                          @RequestParam("phone") String phone,@RequestParam("authority") Integer authority,
+                          HttpSession httpSession,HttpServletResponse response) throws IOException {
         System.out.println("Customer---username："+ username + " password：" + password + "register");
         Msg msg = new Msg(200,"注册成功");
         User user = userService.doRegister(username, password, phone,authority);
         if (user != null) {
             httpSession.setAttribute("USER_SESSION",user);
-            Map<String,Object> map = new HashMap<String, Object>();
-            map.put("User",user);
-            msg.setData(map);
+            response.setStatus(200);;
         } else {
-            msg.setCM(200, "注册失败");
+            response.sendError(500,"can't register");
         }
-        return msg;
+        return user;
     }
 }

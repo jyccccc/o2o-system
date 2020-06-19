@@ -6,7 +6,7 @@ package com.jyc.o2o_demo.constant;
 public class DishConstants {
 
     // 照片文件路径
-    public static final String PIC_PATH = "F:\\java_workspace\\order-system\\dishes\\";
+    public static final String PIC_PATH = "/home/jyc/java-jar/order_system/images/dishes/";
     public static final String PIC_DEFAULT = "default.png";
 
 
