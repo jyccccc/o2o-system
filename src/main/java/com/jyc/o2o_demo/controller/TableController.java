@@ -5,11 +5,10 @@ import com.jyc.o2o_demo.bean.Table;
 import com.jyc.o2o_demo.dto.TableDTO;
 import com.jyc.o2o_demo.service.TableService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -43,7 +42,7 @@ public class TableController {
      * @return
      */
     @PutMapping("/tables/{tableId}")
-    public Msg updateOrderState(@PathVariable("tableId") Integer tableId,Integer state) {
+    public Msg updateOrderState(@PathVariable("tableId") Integer tableId,@RequestParam("state") Integer state) {
         System.out.println("Update table's state to " + state);
         Integer res = tableService.modifyTableState(tableId, state);
         if (res != 0) {
@@ -54,6 +53,26 @@ public class TableController {
         return new Msg(400,"修改失败");
     }
 
-
+    /**
+     * 增加餐桌
+     * @param state
+     * @param place
+     * @param session
+     * @return
+     */
+    @PostMapping("/tables")
+    public Msg addTable(@RequestParam("state") Integer state, @RequestParam("place") String place,
+                        @RequestParam("type")Integer type, HttpSession session) {
+        System.out.println(session.getAttribute("ADMIN_SESSION") + "add table");
+        Msg msg = new Msg();
+        Table table = tableService.addTable(state,place,type);
+        if (table != null) {
+            msg.setCM(200,"插入成功");
+            msg.putData("table",table);
+        } else {
+            msg.setCM(400,"插入失败");
+        }
+        return msg;
+    }
 
 }

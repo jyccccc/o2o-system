@@ -5,8 +5,9 @@ package com.jyc.o2o_demo.constant;
  */
 public class UserConstants {
 
-    public static final Integer USER_AUTHORITY = 1;
-    public static final Integer ADMIN_AUTHORITY = 2;
-    public static final Integer WORKER_AUTHORITY = 3;
+    public static final int USER_AUTHORITY = 1;
+    public static final int ADMIN_AUTHORITY = 2;
+    public static final int WORKER_AUTHORITY = 3;
+
 
 }

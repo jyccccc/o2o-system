@@ -8,7 +8,25 @@ public class Table {
     private Integer id;
     private String place;
     private Integer state;
+    private Integer type;
     private String qrCode;  // 二维码地址
+
+    public Table() {
+    }
+
+    public Table(String place, Integer state, Integer type) {
+        this.place = place;
+        this.state = state;
+        this.type = type;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
 
     public Integer getId() {
         return id;

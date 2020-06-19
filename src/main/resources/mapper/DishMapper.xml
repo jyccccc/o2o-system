@@ -17,21 +17,21 @@
     <select id="getAllDishes" resultType="Dish">
         select id,name,type,price,pic
         from dish
-        where state = 1
+--         where state = 1
     </select>
 
     <select id="getDishesByType"  parameterType="String" resultType="Dish">
         select id,name,type,price,pic
         from dish
-        where state = 1
-        and type = #{type}
+--         where state = 1
+        where type = #{type}
     </select>
 
     <select id="getDishInfo"  parameterType="Integer" resultType="Dish">
         select *
         from dish
-        where state = 1
-        and id = #{id}
+--         where state = 1
+        where id = #{id}
     </select>
 
 </mapper>

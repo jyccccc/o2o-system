@@ -3,6 +3,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jyc.o2o_demo.dao.TableMapper">
 
+    <insert id="addTable" useGeneratedKeys="true" keyProperty="id" >
+        insert into tables(place,state,qr_code,type)
+        values (#{place},#{state},#{qrCode},#{type})
+    </insert>
+
     <update id="modifyTableState">
         update tables
         set state = #{state}

@@ -90,7 +90,7 @@ public class OrderController {
      * @return
      */
     @PutMapping("/orders/{id}")
-    public Msg modifyOrderStateById(@PathVariable("id")Integer orderId,Integer state) {
+    public Msg modifyOrderStateById(@PathVariable("id")Integer orderId, @RequestParam("state") Integer state) {
         System.out.println("OrderId = " + orderId + "modify state to " + state);
         Msg msg = new Msg();
         Integer result = orderService.modifyOrderStateById(orderId,state);
@@ -147,7 +147,6 @@ public class OrderController {
      * @return
      */
     @GetMapping("/orders/{customerId}/{orderId}")
-    @ResponseBody
     public Msg getOrdersByCustomerIdOrderId(@PathVariable("customerId") Integer customerId,
                                             @PathVariable("orderId") Integer orderId) {
         System.out.println("customer(id = " + customerId + ") search his order(id = " + orderId + ")");

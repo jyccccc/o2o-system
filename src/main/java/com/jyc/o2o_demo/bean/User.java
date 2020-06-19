@@ -8,14 +8,34 @@ public class User {
     private String username;
     private String password;
     private Integer authority; // 权限
+    private String phone;
 
-    public Integer getID() {
+    public User(String username, String password, Integer authority, String phone) {
+        this.username = username;
+        this.password = password;
+        this.authority = authority;
+        this.phone = phone;
+    }
+
+    public User() {
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setID(Integer id) {
+    public void setId(Integer id) {
         this.id = id;
     }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
 
     public String getUsername() {
         return username;

@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class Msg implements Serializable {
     private int code;  // 状态码
-    private String Message;  // 描述
+    private String message;  // 描述
     private Map<String,Object> data = new HashMap<String, Object>();  // 数据
 
     public Msg() {
@@ -17,12 +17,12 @@ public class Msg implements Serializable {
 
     public Msg(int code, String message) {
         this.code = code;
-        Message = message;
+        this.message = message;
     }
 
     public void setCM(int code,String message) {
         this.code = code;
-        this.Message = message;
+        this.message = message;
     }
 
     public void putData(String key, Object value) {
@@ -38,11 +38,11 @@ public class Msg implements Serializable {
     }
 
     public String getMessage() {
-        return Message;
+        return message;
     }
 
     public void setMessage(String message) {
-        Message = message;
+        message = message;
     }
 
     public Map<String, Object> getData() {

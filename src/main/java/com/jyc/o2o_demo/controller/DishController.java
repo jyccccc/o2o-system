@@ -10,8 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.http.HttpHeaders;
+import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class DishController {
@@ -30,10 +36,25 @@ public class DishController {
         List<DishDTO> dishes = dishService.getAllDishes();
         if(dishes.size() != 0) {
             msg.putData("brief-dishList",dishes);
+
         } else {
             msg.setCM(200,"查询失败");
         }
         return msg;
+    }
+
+    @GetMapping("/dishes/tests")
+    public List<DishDTO> getAllDishess(HttpServletResponse response) throws IOException {
+        System.out.println("查询所有菜品");
+        List<DishDTO> dishes = dishService.getAllDishes();
+        // dishes.clear();
+        if(dishes.size() != 0) {
+            response.setStatus(200);
+            response.addIntHeader("dishLength",dishes.size());
+        } else {
+            response.sendError(404,"Not found!!!");
+        }
+        return dishes;
     }
 
     /**
@@ -42,7 +63,7 @@ public class DishController {
      * @return
      */
     @GetMapping("/dishes")
-    public Msg getDishesByType(@Param("type") String type) {
+    public Msg getDishesByType(@RequestParam("type") String type) {
         Msg msg = new Msg(200, "查询成功");
         System.out.println("查询类别为" + type + "的菜品");
         List<DishDTO> dishes = dishService.getDishesByType(type);
@@ -100,8 +121,21 @@ public class DishController {
         }
     }
 
-//    @PutMapping("/dishes/{dishId}")
-//    public Msg updateDishById(@RequestParam("dishState") Integer dishState, @PathVariable("dishId") Integer dishId) {
-//        dishService.updateDishById(dishId,dishState);
-//    }
+    /**
+     * 修改菜品状态，设置菜品上架或下架
+     * @param dishState
+     * @param dishId
+     * @return
+     */
+    @PutMapping("/dishes/{dishId}")
+    public Msg updateDishById(@RequestParam("dishState") Integer dishState, @PathVariable("dishId") Integer dishId) {
+        Integer res = dishService.updateDishById(dishId, dishState);
+        if(res != 0) {
+            return new Msg(200,"修改成功");
+        } else {
+            return new Msg(400,"修改失败");
+        }
+    }
+
+
 }

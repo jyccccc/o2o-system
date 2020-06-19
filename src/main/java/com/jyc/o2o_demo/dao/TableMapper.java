@@ -19,4 +19,6 @@ public interface TableMapper {
     Integer modifyTableState(Integer id, Integer state);
 
     Table getTableById(Integer id);
+
+    Integer addTable(Table table);
 }

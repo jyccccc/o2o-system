@@ -3,15 +3,15 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jyc.o2o_demo.dao.UserMapper">
     
-    <select id="selectCustomer" parameterType="String" resultType="Customer">
+    <select id="selectUser" resultType="User">
         select *
-        from customer
+        from users
         where password = #{password}
-        and username = #{username}
+        and username = #{username} and authority = #{authority}
     </select>
 
-    <insert id="createCustomer" parameterType="com.jyc.o2o_demo.bean.Customer">
-        insert into customer(username,password,phone,authority)
+    <insert id="createUser" parameterType="com.jyc.o2o_demo.bean.User">
+        insert into users(username,password,phone,authority)
         values (#{username},#{password},#{phone},#{authority})
     </insert>
 

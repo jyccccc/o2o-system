@@ -1,6 +1,7 @@
 package com.jyc.o2o_demo.dao;
 
 import com.jyc.o2o_demo.bean.Customer;
+import com.jyc.o2o_demo.bean.User;
 import com.jyc.o2o_demo.bean.Worker;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -18,22 +19,15 @@ public interface UserMapper {
      * @param password
      * @return
      */
-    public Customer selectCustomer(String username, String password);
+    public User selectUser(String username, String password,Integer authority);
 
 
     /**
-     * 创建顾客
-     * @param customer
+     * 创建用户
+     * @param user
      * @return
      */
-    public Integer createCustomer(Customer customer);
+    public Integer createUser(User user);
 
-    /**
-     * 创建工作人员
-     * @param username
-     * @param password
-     * @return
-     */
-    public Worker createWorker(String username, String password);
 
 }

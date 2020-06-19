@@ -93,8 +93,8 @@ public class DishService {
         byte[] bytes = null;
         try {
             if (!file.isEmpty()) {  // 图片非空，保存图片
-                file.transferTo(Paths.get(DishConstants.PIC_PATH));
                 filename = file.getOriginalFilename();  // 获取图片信息
+                file.transferTo(Paths.get(DishConstants.PIC_PATH + filename));
                 bytes = file.getBytes();
             } else {  // 图片为空，置为默认图片
                 filename = DishConstants.PIC_DEFAULT;
