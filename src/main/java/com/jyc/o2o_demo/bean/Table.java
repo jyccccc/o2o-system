@@ -14,6 +14,13 @@ public class Table {
     public Table() {
     }
 
+    public Table(String place, Integer state, Integer type, String qrCode) {
+        this.place = place;
+        this.state = state;
+        this.type = type;
+        this.qrCode = qrCode;
+    }
+
     public Table(String place, Integer state, Integer type) {
         this.place = place;
         this.state = state;

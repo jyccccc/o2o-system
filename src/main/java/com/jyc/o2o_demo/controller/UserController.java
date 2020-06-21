@@ -55,7 +55,7 @@ public class UserController {
      * @param httpSession
      * @return  注册成功的用户
      */
-    @PutMapping(path = "/users/register")
+    @PostMapping(path = "/users/register")
     public User doRegister(@RequestParam("username") String username,@RequestParam("password") String password,
                           @RequestParam("phone") String phone,@RequestParam("authority") Integer authority,
                           HttpSession httpSession,HttpServletResponse response) throws IOException {

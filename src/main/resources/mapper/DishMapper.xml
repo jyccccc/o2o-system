@@ -15,13 +15,13 @@
     </update>
 
     <select id="getAllDishes" resultType="Dish">
-        select id,name,type,price,pic
+        select *
         from dish
 --         where state = 1
     </select>
 
     <select id="getDishesByType"  parameterType="String" resultType="Dish">
-        select id,name,type,price,pic
+        select *
         from dish
 --         where state = 1
         where type = #{type}

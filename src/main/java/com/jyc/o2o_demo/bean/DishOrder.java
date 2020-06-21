@@ -17,6 +17,16 @@ public class DishOrder {
     private String name;
     private String pic;
 
+    public DishOrder(Integer orderId, Integer dishId, Date createTime, Integer dishNum, Double price, String name, String pic) {
+        this.orderId = orderId;
+        this.dishId = dishId;
+        this.createTime = createTime;
+        this.dishNum = dishNum;
+        this.price = price;
+        this.name = name;
+        this.pic = pic;
+    }
+
     public Double getPrice() {
         return price;
     }

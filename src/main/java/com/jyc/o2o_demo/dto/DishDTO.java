@@ -4,38 +4,29 @@ import com.jyc.o2o_demo.bean.Dish;
 
 import java.io.File;
 
-public class DishDTO {
+public class DishDTO extends Dish{
 
-    private Dish dish;
-    private byte[] pic;
+    private byte[] file;
+
+    public DishDTO(Dish dish,byte[] file) {
+        super(dish.getName(), dish.getType(), dish.getPrice(), dish.getDescription(), dish.getState());
+        setId(dish.getId());
+        this.file = file;
+    }
 
     public DishDTO(Dish dish) {
-        this.dish = dish;
+        super(dish.getName(), dish.getType(), dish.getPrice(), dish.getDescription(), dish.getState());
+        setId(dish.getId());
     }
 
     public DishDTO() {
     }
 
-    public byte[] getPic() {
-        return pic;
+    public byte[] getFile() {
+        return file;
     }
 
-    public void setPic(byte[] pic) {
-        this.pic = pic;
+    public void setFile(byte[] file) {
+        this.file = file;
     }
-
-    public DishDTO(Dish dish, byte[] pic) {
-        this.dish = dish;
-        this.pic = pic;
-    }
-
-    public Dish getDish() {
-        return dish;
-    }
-
-    public void setDish(Dish dish) {
-        this.dish = dish;
-    }
-
-
 }

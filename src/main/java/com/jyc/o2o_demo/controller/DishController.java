@@ -57,6 +57,7 @@ public class DishController {
         } else {
             response.sendError(403,"Can't found any dishes");
         }
+        response.addHeader("Access-Control-Allow-Origin","*");  // 跨域
         return dishes;
     }
 
@@ -123,6 +124,4 @@ public class DishController {
         }
         return res;
     }
-
-
 }

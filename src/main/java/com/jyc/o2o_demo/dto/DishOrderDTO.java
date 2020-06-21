@@ -3,35 +3,35 @@ package com.jyc.o2o_demo.dto;
 import com.jyc.o2o_demo.bean.DishOrder;
 
 import java.io.Serializable;
+import java.util.Date;
 
-public class DishOrderDTO implements Serializable {
+public class DishOrderDTO  extends DishOrder{
     private static final long serialVersionUID = 1L;
+    private byte[] file;
 
-    private DishOrder dishOrder;
-    private byte[] pic;
+
+    public DishOrderDTO(Integer orderId, Integer dishId, Date createTime, Integer dishNum, Double price, String name, String pic) {
+        super(orderId, dishId, createTime, dishNum, price, name, pic);
+    }
 
     public DishOrderDTO(DishOrder dishOrder) {
-        this.dishOrder = dishOrder;
+        super(dishOrder.getOrderId(),dishOrder.getDishId(),dishOrder.getCreateTime(),
+                dishOrder.getDishNum(),dishOrder.getPrice(),dishOrder.getName(),dishOrder.getPic());
+        setId(dishOrder.getId());
     }
 
     public DishOrderDTO(DishOrder dishOrder, byte[] pic) {
-        this.dishOrder = dishOrder;
-        this.pic = pic;
+        super(dishOrder.getOrderId(),dishOrder.getDishId(),dishOrder.getCreateTime(),
+                dishOrder.getDishNum(),dishOrder.getPrice(),dishOrder.getName(),dishOrder.getPic());
+        setId(dishOrder.getId());
+        this.file = pic;
     }
 
-    public DishOrder getDishOrder() {
-        return dishOrder;
+    public byte[] getFile() {
+        return file;
     }
 
-    public void setDishOrder(DishOrder dishOrder) {
-        this.dishOrder = dishOrder;
-    }
-
-    public byte[] getPic() {
-        return pic;
-    }
-
-    public void setPic(byte[] pic) {
-        this.pic = pic;
+    public void setFile(byte[] file) {
+        this.file = file;
     }
 }

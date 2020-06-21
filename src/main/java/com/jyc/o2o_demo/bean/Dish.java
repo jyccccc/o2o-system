@@ -16,6 +16,7 @@ public class Dish {
     public Dish() {
     }
 
+
     public Dish(String name, String type, Double price, String description, Integer state) {
         this.name = name;
         this.type = type;

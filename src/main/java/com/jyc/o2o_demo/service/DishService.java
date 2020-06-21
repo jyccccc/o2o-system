@@ -74,7 +74,7 @@ public class DishService {
         DishDTO dishDTO = new DishDTO(dish);
         try {
             byte[] bytesByPath = PicUtil.getBytesByPath(DishConstants.PIC_PATH + dish.getPic());
-            dishDTO.setPic(bytesByPath);
+            dishDTO.setFile(bytesByPath);
         } catch (Exception e) {
             System.out.println("图片文件打开失败");
         }
